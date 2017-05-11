@@ -1,8 +1,7 @@
 {% extends "usedFiles.html" %}
 {% block content %}
    
-      <h3>ISSP AWESOME SITE - EDIT
-</h3>
+      <h3>ISSP AWESOME SITE - EDIT</h3>
       <hr/>
       
       {%- for category, message in get_flashed_messages(with_categories = true) %}
@@ -10,7 +9,7 @@
             {{ message }}
          </div>
       {%- endfor %}
-      
+      <script type="text/javascript" src="{{url_for('static',filename='js/upload.js') }}"></script>
       <form action = "{{ request.path }}" method = "post">
 
          <label for = "name">Name(Title)</label><br>
@@ -31,7 +30,21 @@
          <label for = "links">Links</label><br>
          <input type = "text" name = "links" value="{{ project.links }}" data-role="tagsinput"/><br>
 
+         <label for = "pictures">Pictures</label><br>
+         <input type = "text" name = "pictures" value="{{ project.pictures }}" hidden/><br>
+         <div>
+         {% for pic in pictures%}
+         <a href="{{url_for('delete_pic',id_number=project.id,picture=loop.index0)}}"><img src="../{{pic}}" width="10%" height="10%"/></a>
+         {%endfor%}
+         </div>
+
          <input type = "submit" value = "Zapisz zmiany" />
       </form>
+
+      <div id="dropbox" class="{{project.id}}">
+         <span class="message">Drop images here to upload.</span>
+
+      </div>
+
 
 {% endblock %}

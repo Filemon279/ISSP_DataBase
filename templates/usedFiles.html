@@ -9,10 +9,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
 <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
 <link rel="stylesheet" href="{{url_for('static', filename='assets/app.css') }}">
-<link rel="stylesheet" href="static/css/styles.css" />
+<link rel="stylesheet" href="{{url_for('static', filename='css/styles.css') }}" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script> 
-<script type="text/javascript" src="static/js/jquery.filedrop.js"></script>
-<script type="text/javascript" src="static/js/upload.js"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/jquery.filedrop.js') }}"></script>
 <script src="{{url_for('static', filename='dist/bootstrap-tagsinput.min.js') }} "></script>
 
 <style>

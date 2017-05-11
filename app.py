@@ -3,7 +3,7 @@
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, jsonify, redirect, url_for, request
+from flask import Flask, render_template, jsonify, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 import time
 
@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///projects.sqlite3'
 app.config['SECRET_KEY'] = "random string"
 app.config.from_object(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 
 db = SQLAlchemy(app)
@@ -25,6 +25,12 @@ def updateRecord(id_number,db):
    projectToUpdate.tags = request.form['tags']
    projectToUpdate.links = request.form['links']
    projectToUpdate.editDate = time.strftime("%H:%M:%S")
+   db.session.commit()
+
+def addPhoto(id_number,db,photo_URL):
+   projectToUpdate = projects.query.filter_by(id=id_number).first()
+   if (projectToUpdate.pictures==""): projectToUpdate.pictures += photo_URL
+   else: projectToUpdate.pictures += ","+photo_URL
    db.session.commit()
 
 def deleteRecord(id_number,db):
@@ -62,19 +68,21 @@ def show_all():
    return render_template('show_all.html', projects = projects.query.all() )
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
+@app.route('/upload/<int:id_number>', methods=['POST'])
+def upload(id_number):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             now = datetime.now()
-            filename = os.path.join(app.config['UPLOAD_FOLDER'], "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file.filename.rsplit('.', 1)[1]))
+            if not os.path.exists(app.config['UPLOAD_FOLDER']+"/"+str(id_number)):
+               os.makedirs(app.config['UPLOAD_FOLDER']+"/"+str(id_number))
+            filename = os.path.join(app.config['UPLOAD_FOLDER']+"/"+str(id_number), "%s.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file.filename.rsplit('.', 1)[1]))
             file.save(filename)
+            addPhoto(id_number,db,filename)
             return jsonify({"success":True})
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
 
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
@@ -86,9 +94,23 @@ def new():
          project = projects(request.form['name'], request.form['authors'],request.form['subjectName'], request.form['description'],request.form['tags'], request.form['links'])
          db.session.add(project)
          db.session.commit()
-         flash('Record was successfully added')
-         return redirect(url_for('show_all'))
+         #flash('Record was successfully added')
+         return redirect(url_for('upload_Photos',id_number=project.id))
    return render_template('new.html')
+
+
+
+
+@app.route('/uploadPhotos/<int:id_number>', methods = ['GET', 'POST'])
+def upload_Photos(id_number):
+   if request.method == 'POST':
+      if not request.form['name'] or not request.form['authors'] or not request.form['subjectName'] or not request.form['description'] or not request.form['tags'] or not request.form['links']:
+         flash('Please enter all the fields', 'error')
+      else:
+         updateRecord(id_number,db)
+         flash('Record was successfully updated')
+         return redirect(url_for('show_all'))
+   return render_template('uploadPhotos.html', project = projects.query.filter_by(id=id_number).first() )
 
 
 @app.route('/edit/<int:id_number>', methods = ['GET', 'POST'])
@@ -100,8 +122,11 @@ def edit_project(id_number):
          updateRecord(id_number,db)
          #db.session.values(request.form['name'], request.form['authors'],request.form['subjectName'], request.form['description'],request.form['tags'], request.form['links'])
          flash('Record was successfully updated')
-         return redirect(url_for('show_all'))
-   return render_template('edit.html', project = projects.query.filter_by(id=id_number).first() )
+         return redirect(url_for('show_all')) 
+   projectObject = projects.query.filter_by(id=id_number).first(); 
+   pics_array = projectObject.pictures.split(",")
+   print(pics_array)
+   return render_template('edit.html', project =projectObject , pictures=pics_array )
 
 @app.route('/delete_project/<int:id_number>', methods = ['GET', 'POST'])
 def delete_project(id_number):
@@ -110,6 +135,15 @@ def delete_project(id_number):
          deleteRecord(id_number,db)
       return redirect(url_for('show_all'))
    return render_template('delete_project.html', project = projects.query.filter_by(id=id_number).first()  )
+
+@app.route('/delete_pic/<int:id_number>/<picture>', methods = ['GET','POST'])
+def delete_pic(id_number,picture):
+   projectToUpdate = projects.query.filter_by(id=id_number).first()
+   pics_array = projectToUpdate.pictures.split(",")
+   del pics_array[int(picture)]
+   projectToUpdate.pictures = ",".join(pics_array)
+   db.session.commit()
+   return redirect(url_for('edit_project',id_number=id_number))
 
 
 
