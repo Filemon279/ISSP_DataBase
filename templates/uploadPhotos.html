@@ -1,0 +1,67 @@
+{% extends "usedFiles.html" %}
+{% block content %}
+   
+      <h3>ISSP AWESOME SITE - CONFIRM & UPLOAD MF PHOTOS</h3>
+      <hr/>
+      
+      <script type="text/javascript" src="{{url_for('static',filename='js/upload.js') }}"></script>
+
+          {% if project %}
+         <label for = "name">Name(Title)</label><br>
+         <input type = "text" name = "name" value="{{project.name}}" placeholder = "Name(Title)" disabled/><br> 
+
+         <label for = "authors">Authors</label><br>
+         <input type = "text" name = "authors" value="{{project.authors}}" placeholder = "Authors" disabled/><br>
+
+
+         <label for = "subjectName">Subject Name</label><br>
+         <input type = "text" name = "subjectName" value="{{project.subjectName}}" placeholder = "Subject Name" disabled/><br>
+
+
+         <label for = "description">Description</label><br>
+         <div name = "description"  placeholder = "Description"> {{project.description}}</div><br>
+
+
+
+         <label for = "tags">Tagsss</label><br>
+         <input type = "text" name = "tags" value=" {{project.tags}}" placeholder = "Tags" data-role="tagsinput" disabled/><br>
+
+
+         <label for = "links">Links</label><br>
+         <input type = "text" name = "links" value="{{project.links}}" placeholder = "Links" data-role="tagsinput"disabled/><br>
+
+          {%else%}
+         <label for = "name">Name(Title)</label><br>
+         <input type = "text" name = "name" placeholder = "Name(Title)" disabled/><br>
+         
+         <label for = "authors">Authors</label><br>
+         <input type = "text" name = "authors" placeholder = "Authors" disabled/><br>
+
+
+         <label for = "subjectName">Subject Name</label><br>
+         <input type = "text" name = "subjectName" placeholder = "Subject Name" disabled/><br>
+
+
+         <label for = "description">Description</label><br>
+         <div name = "description" placeholder = "Description"></div><br>
+
+
+         <label for = "tags">Tags</label><br>
+         <input type = "text" name = "tags" placeholder = "Tags" data-role="tagsinput" disabled/><br>
+        
+
+         <label for = "links">Linksss</label><br>
+         <input type = "text" name = "links" placeholder = "Links" data-role="tagsinput" disabled/><br>
+
+         {% endif %}
+
+            <div id="dropbox" class="{{project.id}}">
+         <span class="message">Drop images here to upload.</span>
+      </div>
+
+
+
+      
+{% endblock %}
+
+         
