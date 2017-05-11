@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+   <body>
+   
+      <h3>Czy na bank chcesz usunąć ten projekt?</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+
+   
+       <input type="submit" name="submit" value="YES">
+       <input type="submit" name="submit" value="NO">
+     
+      </form>
+      
+   </body>
+</html>

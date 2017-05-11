@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+   
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{{url_for('static', filename='dist/bootstrap-tagsinput.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
+<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+<link rel="stylesheet" href="{{url_for('static', filename='assets/app.css') }}">
+<link rel="stylesheet" href="static/css/styles.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script> 
+<script type="text/javascript" src="static/js/jquery.filedrop.js"></script>
+<script type="text/javascript" src="static/js/upload.js"></script>
+<script src="{{url_for('static', filename='dist/bootstrap-tagsinput.min.js') }} "></script>
+
+<style>
+  .droparea {
+      width: 200px;
+      height: 200px;
+      border-style: solid;
+      border-width: 3px;
+      border-color: red;
+      float: left;
+      line-height: 200px;
+      text-align: center;
+  }
+</style>
+
+
+
+</head>
+<body>
+ {% block content %}{% endblock %}
+</body>
+
+<script>
+$(document).on("keypress", "form", function(event) { 
+    return event.keyCode != 13;
+});
+</script>
+
+
+</html>

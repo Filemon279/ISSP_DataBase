@@ -1,0 +1,37 @@
+{% extends "usedFiles.html" %}
+{% block content %}
+   
+      <h3>ISSP AWESOME SITE - EDIT
+</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+
+         <label for = "name">Name(Title)</label><br>
+         <input type = "text" name = "name" value="{{ project.name }}"/></input><br>
+
+         <label for = "authors">Authors</label><br>
+         <input type = "text" name = "authors" value="{{ project.authors }}"/><br>
+
+         <label for = "subjectName">Subject Name</label><br>
+         <input type = "text" name = "subjectName" value="{{ project.subjectName }}"/><br>
+
+         <label for = "description">Description</label><br>
+         <textarea name = "description" />{{ project.description }}</textarea><br>
+
+         <label for = "tags">Tags</label><br>
+         <input type = "text" name = "tags" value="{{ project.tags }}" data-role="tagsinput"/><br>
+
+         <label for = "links">Links</label><br>
+         <input type = "text" name = "links" value="{{ project.links }}" data-role="tagsinput"/><br>
+
+         <input type = "submit" value = "Zapisz zmiany" />
+      </form>
+
+{% endblock %}

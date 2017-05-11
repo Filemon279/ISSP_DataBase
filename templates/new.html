@@ -1,0 +1,78 @@
+{% extends "usedFiles.html" %}
+{% block content %}
+   
+      <h3>ISSP AWESOME SITE - ADD NEW RECORD</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+
+
+          {% if fields %}
+         <label for = "name">Name(Title)</label><br>
+         <input type = "text" name = "name" value="{{fields.form['name']}}" placeholder = "Name(Title)" /><br> 
+
+         <label for = "authors">Authors</label><br>
+         <input type = "text" name = "authors" value="{{fields.form['authors']}}" placeholder = "Authors" /><br>
+
+
+         <label for = "subjectName">Subject Name</label><br>
+         <input type = "text" name = "subjectName" value="{{fields.form['subjectName']}}" placeholder = "Subject Name" /><br>
+
+
+         <label for = "description">Description</label><br>
+         <textarea name = "description"  placeholder = "Description">{{fields.form['description']}}</textarea><br>
+
+
+
+         <label for = "tags">Tags</label><br>
+         <input type = "text" name = "tags" value="{{fields.form['tags']}}" placeholder = "Tags" data-role="tagsinput" /><br>
+
+
+         <label for = "links">Links</label><br>
+         <input type = "text" name = "links" value="{{fields.form['links']}}" placeholder = "Links" data-role="tagsinput"/><br>
+
+          {%else%}
+         <label for = "name">Name(Title)</label><br>
+         <input type = "text" name = "name" placeholder = "Name(Title)" /><br>
+        
+
+         
+         <label for = "authors">Authors</label><br>
+         <input type = "text" name = "authors" placeholder = "Authors" /><br>
+
+
+         <label for = "subjectName">Subject Name</label><br>
+         <input type = "text" name = "subjectName" placeholder = "Subject Name" /><br>
+
+
+         <label for = "description">Description</label><br>
+         <textarea name = "description" placeholder = "Description"></textarea><br>
+
+
+         <label for = "tags">Tags</label><br>
+         <input type = "text" name = "tags" placeholder = "Tags" data-role="tagsinput" /><br>
+        
+
+         <label for = "links">Links</label><br>
+         <input type = "text" name = "links" placeholder = "Links" data-role="tagsinput"/><br>
+
+         {% endif %}
+         <input type = "submit" value = "Submit" />
+      </form>
+
+      <div id="dropbox">
+         <span class="message">Drop images here to upload.</span>
+      </div>
+
+      
+
+      
+{% endblock %}
+
+         

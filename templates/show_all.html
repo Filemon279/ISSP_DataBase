@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{{url_for('static', filename='dist/bootstrap-tagsinput.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
+<link rel="stylesheet" href="{{url_for('static', filename='assets/app.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{{url_for('static', filename='dist/bootstrap-tagsinput.min.js') }} "></script>
+
+<script>a=''</script>
+</head>
+   <style>
+      th,td
+      {
+         padding: 5px;
+      }
+   </style>
+   <body>
+      
+      <h3>
+         <a href = "{{ url_for('show_all') }}">ISSP Site - BAZA DANYCH</a>
+      </h3>
+      
+      <hr/>
+      {%- for message in get_flashed_messages() %}
+         {{ message }}
+      {%- endfor %}
+		
+      <h3>WSZYSTKIE REKORDY (<a href = "{{ url_for('new') }}">DODAJ
+         </a>)</h3>
+      
+      <table>
+         <thead>
+            <tr>
+               <th>id</th>
+               <th>name</th>
+               <th>authors</th>
+               <th>subjectName</th>
+               <th>description</th>
+               <th>tags</th>
+               <th>links</th>
+               <th>creationDate</th>
+               <th>editDate</th>
+               <th>deleteDate</th>
+               <th>EDIT</th>
+               <th>DELETE</th>
+            </tr>
+         </thead>
+         
+      <tbody>
+            {% for project in projects %}
+               {% if project.deleteDate!=""%}
+               <tr style="color: red">
+                {%else%}
+                <tr>
+               {%endif%}
+      <td> {{project.id}}</td>
+      <td> {{project.name}}</td>
+      <td> {{project.authors}}</td>
+      <td> {{project.subjectName}}</td>
+      <td> {{project.description}}</td>
+      <td> {{project.tags}}</td>
+      <td> {{project.links}}</td>
+      <td> {{project.creationDate}}</td>
+      <td> {{project.editDate}}</td>
+      <td> {{project.deleteDate}}</td>
+      <td> <a href = "{{ url_for('edit_project', id_number=project.id) }}">EDIT</a></td>
+      <td> <a href = "{{ url_for('delete_project', id_number=project.id)}}">DELETE</a></td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+
+      <div id="search">
+      <hr><hr><hr>
+      <h2>SEARCH ME DARLING</h2>
+
+      <input id="searchTags" val='' data-role="tagsinput"/>
+
+      {% for project in projects %}
+      <script>
+      $("#searchTags").val($("#searchTags").val()+','+('{{project.tags}}'));
+      </script>
+      {% endfor %}
+       
+    <table id="searchTable">
+
+            <tr>
+               <th>id</th>
+               <th>name</th>
+               <th>authors</th>
+               <th>subjectName</th>
+               <th>description</th>
+               <th>tags</th>
+               <th>links</th>
+               <th>creationDate</th>
+               <th>editDate</th>
+               <th>deleteDate</th>
+               <th>EDIT</th>
+               <th>DELETE</th>
+            </tr>
+
+            {% for project in projects %}
+               {% if project.deleteDate!=""%}
+               <tr style="color: red;display: none">
+               {%else%}
+                <tr style="display: none">
+               {%endif%}
+      <td> {{project.id}}</td>
+      <td> {{project.name}}</td>
+      <td> {{project.authors}}</td>
+      <td> {{project.subjectName}}</td>
+      <td> {{project.description}}</td>
+      <td class="tags"> {{project.tags}}</td>
+      <td> {{project.links}}</td>
+      <td> {{project.creationDate}}</td>
+      <td> {{project.editDate}}</td>
+      <td> {{project.deleteDate}}</td>
+      <td> <a href = "{{ url_for('edit_project', id_number=project.id) }}">EDIT</a></td>
+      <td> <a href = "{{ url_for('delete_project', id_number=project.id)}}">DELETE</a></td>
+               </tr>
+            {% endfor %}
+    
+      </table>      
+
+      </div>
+
+<script>
+$("#searchTags").change(function(){
+   var selectedTags = $("#searchTags").val().split(',');
+   $( "#searchTable tr" ).each(function( index) {
+      tenObiekt = this
+      for(a in selectedTags){
+         var chosenTags = $(".tags",this).text().replace(" ", "").split(',');
+         for(b in chosenTags){
+            if(chosenTags[b]==selectedTags[a])
+            {
+               $(tenObiekt).css("display","table-row");
+               console.log(selectedTags[a])
+               console.log(chosenTags[b])
+               return;
+            }
+            else if(index>0)
+            {
+               $(this).css("display","none");
+               console.log("brak")
+            }
+         }
+      }
+      console.log( index + ": " + $(".tags",this).text() );
+   });  
+});
+</script>  
+
+
+
+   </body>
+</html>
