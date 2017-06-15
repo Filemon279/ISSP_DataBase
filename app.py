@@ -26,6 +26,7 @@ db = SQLAlchemy(app)
 #	AKTUALIZACJA REKORDU			#
 #####################################
 def updateRecord(id_number,db):
+	"""Aktualizacja wpisu o zadnym ID w bazie DB o wartosci z formularza"""
    projectToUpdate = projects.query.filter_by(id=id_number).first()
    projectToUpdate.name = request.form['name']
    projectToUpdate.authors = request.form['authors']
@@ -40,6 +41,7 @@ def updateRecord(id_number,db):
 #	DODAWANIE ZDJĘCIA				#
 #####################################
 def addPhoto(id_number,db,photo_URL):
+	"""Dodawanie URL zdjecia do projektu o zadanym ID w bazie DB"""
    projectToUpdate = projects.query.filter_by(id=id_number).first()
    if (projectToUpdate.pictures==""): projectToUpdate.pictures += photo_URL
    else: projectToUpdate.pictures += ","+photo_URL
@@ -49,6 +51,7 @@ def addPhoto(id_number,db,photo_URL):
 #	USUWANIE REKORDU				#
 #####################################
 def deleteRecord(id_number,db):
+	"""Usuwanie rekordu o zadanym ID w bazie DB"""
    projectToUpdate = projects.query.filter_by(id=id_number).first()
    projectToUpdate.deleteDate = time.strftime("%H:%M:%S")
    db.session.commit()
@@ -57,6 +60,7 @@ def deleteRecord(id_number,db):
 #	MODEL PROJEKTU DO BAZY DANYCH	#
 #####################################
 class projects(db.Model):
+	"""Klasa projektu, ktora przechowywana jest w bazie danych"""
    id = db.Column('project_id', db.Integer, primary_key = True)
    name = db.Column(db.String(100))
    authors = db.Column(db.String(100))
@@ -86,6 +90,7 @@ class projects(db.Model):
 ######################################
 @app.route('/')
 def show_all():
+	"""Zwraca wszystkie rekordy z bazy danych"""
    return render_template('show_all.html', projects = projects.query.all() )
 
 
@@ -94,6 +99,7 @@ def show_all():
 #####################################
 @app.route('/upload/<int:id_number>', methods=['POST'])
 def upload(id_number):
+	"""Funkcja, ktora wgrywa zdjecia na serwer"""
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -109,6 +115,7 @@ def upload(id_number):
 #	NAZWA ORAZ ROZSZERZENIE			#
 #####################################
 def allowed_file(filename):
+	"""Zwraca informacje o dozwolonej nazwie oraz rozszerzeniu pliku"""
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 #####################################
@@ -116,6 +123,7 @@ def allowed_file(filename):
 #####################################
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
+	"""Dodawanie nowego projektu, wyswietla template, w ktorego komorki wpisujemy dane"""
    if request.method == 'POST':
       if not request.form['name'] or not request.form['authors'] or not request.form['subjectName'] or not request.form['description'] or not request.form['tags'] or not request.form['links']:
          flash('Please enter all the fields', 'error')
@@ -133,6 +141,7 @@ def new():
 #	DODAWANIE ZDJECIA TEMPLATE		#
 #####################################
 @app.route('/uploadPhotos/<int:id_number>', methods = ['GET', 'POST'])
+"""Dodawanie zdjecia do projektu (wgrywanie go na serwer do folderu o ID projektu)"""
 def upload_Photos(id_number):
    if request.method == 'POST':
       if not request.form['name'] or not request.form['authors'] or not request.form['subjectName'] or not request.form['description'] or not request.form['tags'] or not request.form['links']:
@@ -149,6 +158,7 @@ def upload_Photos(id_number):
 #####################################
 @app.route('/edit/<int:id_number>', methods = ['GET', 'POST'])
 def edit_project(id_number):
+	"""Edycja projektu o zadnym ID - wyswietla Template, ktory pozwala na edytowanie komorek projektu"""
    if request.method == 'POST':
       if not request.form['name'] or not request.form['authors'] or not request.form['subjectName'] or not request.form['description'] or not request.form['tags'] or not request.form['links']:
          flash('Please enter all the fields', 'error')
@@ -167,6 +177,7 @@ def edit_project(id_number):
 #####################################
 @app.route('/delete_project/<int:id_number>', methods = ['GET', 'POST'])
 def delete_project(id_number):
+	"""Usuwanie projektu z bazy danych (dopisuje date usuniecia)"""
    if request.method == 'POST': 
       if request.form['submit']=="YES":
          deleteRecord(id_number,db)
@@ -178,6 +189,7 @@ def delete_project(id_number):
 #####################################
 @app.route('/delete_pic/<int:id_number>/<picture>', methods = ['GET','POST'])
 def delete_pic(id_number,picture):
+	"""Usuwanie zdjecia z projektu"""
    projectToUpdate = projects.query.filter_by(id=id_number).first()
    pics_array = projectToUpdate.pictures.split(",")
    del pics_array[int(picture)]
@@ -195,14 +207,12 @@ if __name__ == '__main__':
    db.create_all()
    app.run(debug = True)
 
-#####################################
-#	WEZ JEDEN PROJEKT				#
-#####################################
+
 def getProject(id_number):
+	"""Zwraca projekty o zadanym ID"""
    return projects.query.filter_by(id=id_number).first()
 
-#####################################
-#	WEZ PROJEKTY OD INDEXU + LICZBA	#
-#####################################
+
 def getProjects(index,amount):
+	"""Zwraca projekty od zadanego indexu do index+amount"""
    return projects.query.filter_by(id>=index and id<(index+abount))
